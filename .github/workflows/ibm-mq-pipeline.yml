@@ -1,0 +1,49 @@
+name: Git-Docker-EC2
+'on':
+  push:
+    branches:
+      - feature/springboot-docker-aws-advanced
+jobs:
+  build:
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: temurin
+      - name: Build with Maven
+        run: mvn clean install
+      - name: Build & push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: venky4026/ibm-mq-message-service
+          tags: latest
+          registry: docker.io
+          dockerfile: Dockerfile.ci
+          username: '${{ secrets.DOCKER_USERNAME }}'
+          password: '${{ secrets.DOCKER_PASSWORD }}'
+  deploy:
+    needs: build
+    runs-on:
+      - ip-172-31-47-16
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull venky4026/ibm-mq-message-service
+      - name: Delete old container
+        run: docker rm -f springboot-app-container
+      - name: Run docker container
+        run: docker run -d -p 8004:8004 --name springboot-app-container venky4026/ibm-mq-message-service
+      - name: Pull ibm-mq from docker hub
+        run: docker pull ibmcom/mq:latest
+      - name: Delete old container
+        run: docker rm -f ibm-mq
+      - name: Docker up
+        run: docker compose up
+#      - name: Create volume QM1DATA
+#        run: docker volume create qm1data
+#      - name: Run ibm-mq container
+#       run : docker run --env LICENSE=accept --env MQ_QMGR_NAME=QM1 --volume qm1data:/mnt/mqm --publish 1414:1414 --publish 9443:9443 --detach --env MQ_APP_PASSWORD=passw0rd --detach ibmcom/mq:latest --name ibm-mq

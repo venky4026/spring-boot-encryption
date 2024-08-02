@@ -1,0 +1,4 @@
+FROM openjdk:17
+#pom file name should check
+ADD target/ibm-mq-message-service.jar ibm-mq-message-service.jar
+ENTRYPOINT ["java","-jar","/ibm-mq-message-service.jar"]

@@ -1,0 +1,15 @@
+server:
+  port: 8004
+  servlet: 
+    context-path: /encryption-service
+    encoding:
+      charset: UTF-8
+      force-response: true
+
+
+management:
+    endpoints:
+        web:
+            exposure:
+                exclude: env,beans
+                include: '*'

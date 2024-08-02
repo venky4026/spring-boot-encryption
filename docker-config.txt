@@ -1,0 +1,68 @@
+Download the latest Docker
+
+docker pull ibmcom/mq:latest
+
+docker images
+
+docker volume create qm1data
+
+docker run --env LICENSE=accept --env MQ_QMGR_NAME=QM1 --volume qm1data:/mnt/mqm --publish 1414:1414 --publish 9443:9443 --detach --env MQ_APP_PASSWORD=passw0rd --detach ibmcom/mq:latest
+
+
+docker pull --dockerimage
+
+docker run -p 8004:8004 --dockerimage
+
+
+AWS-EC2 Connection Config
+=========================
+
+# Create a folder
+$ mkdir actions-runner && cd actions-runner
+
+# Download the latest runner package
+$ curl -o actions-runner-linux-x64-2.316.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.316.1/actions-runner-linux-x64-2.316.1.tar.gz
+
+# Optional: Validate the hash
+$ echo "d62de2400eeeacd195db91e2ff011bfb646cd5d85545e81d8f78c436183e09a8  actions-runner-linux-x64-2.316.1.tar.gz" | shasum -a 256 -c
+
+# Extract the installer
+$ tar xzf ./actions-runner-linux-x64-2.316.1.tar.gz
+
+sudo yum install libicu
+
+# Create the runner and start the configuration experience
+$ ./config.sh --url https://github.com/venky4026/Ibm-mq-message-service --token ANCLQFFVWLRC7AX624QNFLDGL27HI
+Copied!
+# Last step, run it!
+$ ./run.sh
+
+
+Install docker on Amazon EC2 instance
+=====================================
+
+sudo yum update -y
+
+sudo yum install docker -y
+
+sudo systemctl start docker
+
+sudo systemctl status docker
+
+issue:
+Fdocker.sock/v1.24/images/create?fromImage=ibmcom%2Fmq&tag=latest": dial unix /var/run/docker.sock: connect: permission denied
+
+sol : sudo chmod 777 /var/run/docker.sock
+
+
+#install Java on EC2 Instance
+=============================
+
+sudo yum install java-17-amazon-corretto
+
+#ec2 issue
+==========
+
+issue : session for this runner already exists
+
+
